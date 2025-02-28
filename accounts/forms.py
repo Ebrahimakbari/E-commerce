@@ -59,4 +59,39 @@ class UserChangeForm(forms.ModelForm):
         exclude = ["date_joined"]
 
 
+class UserRegistrationForm(forms.Form):
+    VERIFICATION_CHOICES = [
+        ("email", "Email Verification"),
+        ("phone", "Phone Number Verification"),
+    ]
 
+    phone_number = forms.CharField(
+        label="Phone Number", widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    email = forms.EmailField(
+        label="Email", widget=forms.EmailInput(attrs={"class": "form-control"})
+    )
+    first_name = forms.CharField(
+        label="First Name", widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(
+        label="Last Name", widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    password = forms.CharField(
+        label="Password", widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )
+    verification_method = forms.ChoiceField(
+        label="Select Verification Method",
+        choices=VERIFICATION_CHOICES,
+        widget=forms.RadioSelect,
+    )
+
+    # ToDo: check errors on email and phone number that already on db
+
+
+class UserVerificationForm(forms.Form):
+    code = forms.CharField(
+        max_length=4,
+        label="Code",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
