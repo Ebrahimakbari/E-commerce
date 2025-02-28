@@ -1,8 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from accounts.models import CustomUser
+from accounts.models import CustomUser, OtpEmail, OtpPhoneNumber
 from .forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import Group
+
+
+
+
+@admin.register(OtpPhoneNumber)
+class OtpPhoneNumberAdmin(admin.ModelAdmin):
+    list_display = ['phone_number', 'code', 'created']
+
+
+@admin.register(OtpEmail)
+class OtpEmailAdmin(admin.ModelAdmin):
+    list_display = ['email', 'token', 'created']
+
 
 
 @admin.register(CustomUser)
@@ -19,7 +32,6 @@ class UserAdmin(BaseUserAdmin):
         "is_admin",
         "date_joined",
         "last_login",
-        "token",
         "avatar",
     ]
     search_fields = ["email"]
@@ -29,7 +41,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = [
         (
             None,
-            {"fields": ["phone_number", "email", "last_login", "token", "password"]},
+            {"fields": ["phone_number", "email", "last_login", "password"]},
         ),
         ("Personal info", {"fields": ["first_name", "last_name", "avatar"]}),
         ("Permissions", {"fields": ["is_admin", "is_active"]}),

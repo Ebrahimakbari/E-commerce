@@ -11,7 +11,6 @@ class CustomUser(AbstractBaseUser):
     avatar = models.ImageField(upload_to='users/avatar/', blank=True, null=True)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=True)
-    token = models.CharField(max_length=50, blank=True, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -41,3 +40,29 @@ class CustomUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class OtpPhoneNumber(models.Model):
+    phone_number = models.CharField(max_length=11)
+    code = models.SmallIntegerField()
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'otp PhoneNumber'
+        verbose_name_plural = 'otp PhoneNumbers'
+        
+    def __str__(self):
+        return f"{self.phone_number} - {self.code} - {self.created}"
+
+
+class OtpEmail(models.Model):
+    email = models.EmailField(max_length=50)
+    token = models.CharField(max_length=50)
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'otp Email'
+        verbose_name_plural = 'otp Emails'
+        
+    def __str__(self):
+        return f"{self.email} - {self.token} - {self.created}"
