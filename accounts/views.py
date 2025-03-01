@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegistrationForm, UserVerificationForm
+from .forms import UserRegistrationForm, UserVerificationForm, UserLoginForm, UserProfileForm
 from django.views import View
 from django.contrib import messages
 from utils import send_otp_by_email, send_otp_by_phone, create_otp_email_instance, create_otp_phone_number_instance
 import uuid
 import random
 from .models import OtpEmail, OtpPhoneNumber, CustomUser
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 
 
 
@@ -131,8 +131,39 @@ class LogoutView(View):
 
 
 class LoginView(View):
+    class_form = UserLoginForm
     def get(self, request):
-        pass
+        form = self.class_form()
+        return render(request, 'accounts/login.html', {'form':form})
     
     def post(self, request):
-        pass
+        form = self.class_form(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            phone_number = form.cleaned_data.get('phone_number')
+            user = CustomUser.objects.filter(phone_number=phone_number).first()
+            if user.check_password(password):
+                login(request, user)
+                messages.success(request, 'you logged in successfully!')
+                return redirect('home:home')
+            messages.error(request, 'invalid password!!')
+            return redirect('accounts:user_login')
+        return render(request, 'accounts/login.html', {'form':form})
+
+
+class UserProfileView(View):
+    class_form = UserProfileForm
+    def get(self, request):
+        user = CustomUser.objects.get(pk=request.user.id)       
+        form = self.class_form(instance=user)
+        return render(request, 'accounts/profile.html', {'form':form}) 
+    
+    def post(self, request):
+        user = CustomUser.objects.get(pk=request.user.id)
+        form = self.class_form(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'changes saved!')
+            return redirect('accounts:user_profile')
+        messages.error(request, 'invalid inputs!')
+        return render(request, 'accounts/profile.html', {'form':form})

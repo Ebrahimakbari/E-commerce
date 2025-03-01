@@ -1,0 +1,27 @@
+{% extends "shared/base.html" %}
+
+{% block title %}User Profile{% endblock title %}
+
+{% block content %}
+    <div class="d-flex justify-content-center">
+        <div class="shadow-lg p-3 mb-5 rounded bg-light text-dark">
+            <div class="d-flex justify-content-center">
+                {% if form.instance.avatar %}
+                    <img src="{{ form.instance.avatar.url }}" alt="Current avatar" class="img-thumbnail mb-2" style="width: 100px; height: 100px;">
+                {% endif %}
+            </div>
+            <form method="post" action="{% url 'accounts:user_profile' %}" enctype="multipart/form-data">
+                <hr>
+                <label class="form-label d-flex justify-content-center">User Profile:</label>
+                <hr>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input
+                    type="submit"
+                    value="Update"
+                    class="form-control btn btn-primary"
+                />
+            </form>
+        </div>
+    </div>
+{% endblock content %}

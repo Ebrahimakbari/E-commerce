@@ -1,0 +1,21 @@
+{% extends "shared/base.html" %}
+
+{% block title %}User Login{% endblock title %}
+
+{% block content %}
+    <div class="d-flex justify-content-center">
+        <div class="shadow-lg p-3 mb-5 rounded bg-light text-dark">
+            <form class="form" method="post" action="{% url 'accounts:user_login' %}">
+                <label class="form-label">Login Form</label>
+                <hr>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input
+                    type="submit"
+                    value="Login"
+                    class="form-control btn btn-primary"
+                />
+            </form>
+        </div>
+    </div>
+{% endblock content %}
