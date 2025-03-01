@@ -1,6 +1,8 @@
 from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 
 class UserCreationForm(forms.ModelForm):
@@ -85,8 +87,14 @@ class UserRegistrationForm(forms.Form):
         choices=VERIFICATION_CHOICES,
         widget=forms.RadioSelect,
     )
-
-    # ToDo: check errors on email and phone number that already on db
+    
+    def clean(self):
+        validate_data = super().clean()
+        phone_number = validate_data.get('phone_number')
+        email = validate_data.get('email')
+        users = CustomUser.objects.filter(Q(phone_number=phone_number) | Q(email=email))
+        if users.exists():
+            raise ValidationError('Email or Phone number is already signed up!!!')
 
 
 class UserVerificationForm(forms.Form):
@@ -95,3 +103,16 @@ class UserVerificationForm(forms.Form):
         label="Code",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
+
+
+# class UserLoginForm(forms.Form):
+#     phone_number = forms.CharField(max_length=11, label="Phone Number", required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+#     password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+#     def clean(self):
+#         phone_number = self.changed_data.get('phone_number')
+#         password = self.changed_data.get('password')
+#         user = CustomUser.objects.filter(phone_number=phone_number)
+#         if not (user.exists() and user.first().phone_number == phone_number):
+#             raise ValidationError('user with given phone number not found!!')
+#         if user.check_password()

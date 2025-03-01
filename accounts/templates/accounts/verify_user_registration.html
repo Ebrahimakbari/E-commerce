@@ -5,7 +5,7 @@
 {% block content %}
     <div class="d-flex justify-content-center">
         <div class="shadow-lg p-3 mb-5 rounded bg-light text-dark">
-            <form class="form" method="post" action="{% url 'accounts:user_register' %}">
+            <form class="form" method="post" action="{% url 'accounts:user_verification' %}">
                 <label class="form-label">Verification Form</label>
                 <hr>
                 {% csrf_token %}
