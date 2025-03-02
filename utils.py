@@ -34,3 +34,5 @@ def create_otp_email_instance(email, token, expiration_minutes=5):
     return otp
 
 
+# def is_admin(request):
+    
