@@ -19,7 +19,6 @@ from .models import OtpEmail, OtpPhoneNumber, CustomUser
 from django.contrib.auth import logout, login
 
 
-
 class UserRegistrationView(View):
     form_class = UserRegistrationForm
     template_name = "accounts/register.html"
@@ -37,20 +36,21 @@ class UserRegistrationView(View):
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
             password = form.cleaned_data["password"]
+            expire_date = 5
             if verification_method == "email":
                 token = uuid.uuid4()
                 link = (
                     request.build_absolute_uri("/")
                     + f"accounts/user-verification/{token}/"
                 )
-                send_otp_by_email(email, link)
-                create_otp_email_instance(email, token, 10)
+                send_otp_by_email(email, link, expire_date)
+                create_otp_email_instance(email, token, expire_date)
                 redirect_method = "register"
 
             else:
                 code = random.randint(1000, 9999)
                 send_otp_by_phone(phone_number=phone_number, code=code)
-                create_otp_phone_number_instance(phone_number, code, 10)
+                create_otp_phone_number_instance(phone_number, code, expire_date)
                 redirect_method = "verification"
 
             request.session["user_info"] = {
@@ -58,6 +58,7 @@ class UserRegistrationView(View):
                 "phone_number": phone_number,
                 "verification_method": verification_method,
                 "password": password,
+                "expire_date": expire_date,
             }
 
             CustomUser.objects.create_user(
@@ -82,9 +83,9 @@ class UserVerificationView(View):
 
     def get(self, request, *args, **kwargs):
         token = kwargs.get("token")
-        if token and request.session.get("user_info")["verification_method"] == "email":
+        user_info = request.session.get("user_info")
+        if token and user_info["verification_method"] == "email":
             otp_field = OtpEmail.objects.filter(token=token)
-            user_info = request.session.get("user_info")
             user_email = user_info.get("email")
             if otp_field.exists() and user_email == otp_field.first().email:
                 if otp_field.first().is_expired:
@@ -101,12 +102,16 @@ class UserVerificationView(View):
             return redirect("account:user_register")
         else:
             form = self.form_class()
-            return render(request, self.template_name, {"form": form})
+            return render(
+                request,
+                self.template_name,
+                {"form": form, "expire_date": user_info["expire_date"]},
+            )
 
     def post(self, request, *args, **kwargs):
         otp_form = self.form_class(request.POST)
+        user_info = request.session.get("user_info")
         if otp_form.is_valid():
-            user_info = request.session.get("user_info")
             phone_number = user_info.get("phone_number")
             otp_field = OtpPhoneNumber.objects.filter(phone_number=phone_number)
             if otp_field.exists() and phone_number == otp_field.first().phone_number:
@@ -124,7 +129,11 @@ class UserVerificationView(View):
                 return redirect("accounts:user_verification")
             messages.error(request, "Invalid phone number !!")
             return redirect("accounts:user_verification")
-        return render(request, self.template_name, {"form": otp_form})
+        return render(
+            request,
+            self.template_name,
+            {"form": otp_form, "expire_date": user_info["expire_date"]},
+        )
 
 
 class LogoutView(View):

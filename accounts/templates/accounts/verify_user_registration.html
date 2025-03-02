@@ -7,6 +7,7 @@
         <div class="shadow-lg p-3 mb-5 rounded bg-light text-dark">
             <form class="form" method="post" action="{% url 'accounts:user_verification' %}">
                 <label class="form-label">Verification Form</label>
+                <p>code/token will expire in {{ expire_date }} minutes!</p>
                 <hr>
                 {% csrf_token %}
                 {{ form.as_p }}
