@@ -9,7 +9,7 @@ from django.utils import timezone
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=11, unique=True)
-    avatar = models.ImageField(upload_to='users/avatar/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='users/avatar/%Y/%m/%d/', blank=True, null=True)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50)
