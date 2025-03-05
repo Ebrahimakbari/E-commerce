@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # internal_apps
+    'storages',
     # external_apps
     'accounts',
     'home',
@@ -159,3 +160,21 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+#ARVAN CLOUD STORAGE
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            'access_key':config('AWS_ACCESS_KEY_ID'),
+            'secret_key':config('AWS_SECRET_ACCESS_KEY'),
+            'endpoint_url':config('AWS_S3_ENDPOINT_URL'),
+            'file_overwrite':False,
+            'bucket_name':config('AWS_STORAGE_BUCKET_NAME'),
+        },
+    },
+    'staticfiles' : {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    }
+}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -41,3 +42,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(value=self.name)
         return super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("home:product_detail", kwargs={"slug": self.slug})
+    

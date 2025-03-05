@@ -7,7 +7,7 @@
         <div class="shadow-lg p-3 mb-5 rounded bg-light text-dark">
             <div class="d-flex justify-content-center">
                 {% if form.instance.avatar %}
-                    <img src="{{ form.instance.avatar.url }}" alt="Current avatar" class="img-thumbnail mb-2" style="width: 100px; height: 100px;">
+                    <img src="{{ form.instance.avatar.url }}" alt="Current avatar" class="img-thumbnail mb-2 rounded-circle" style="width: 100px; height: 100px;">
                 {% endif %}
             </div>
             <form method="post" action="{% url 'accounts:user_profile' %}" enctype="multipart/form-data">
