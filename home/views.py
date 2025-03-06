@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from .models import Product, Category
 from django.contrib import messages
+from .tasks import get_bucket_list
 
 
 
@@ -18,3 +19,9 @@ class ProductDetail(View):
             return render(request, 'home/detail.html', {'product':product.first()})
         messages.error(request, message='product not found')
         return redirect('home:home')
+
+
+class BucketListView(View):
+    def get(self, request):
+        objects = get_bucket_list()
+        return render(request, 'home/bucket.html', {'objects':objects})

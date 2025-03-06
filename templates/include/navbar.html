@@ -10,6 +10,9 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/admin">Admin</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url "home:bucket" %}">Buckets</a>
+                        </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url "accounts:user_logout" %}">Logout</a>

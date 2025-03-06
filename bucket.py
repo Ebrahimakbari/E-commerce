@@ -7,7 +7,9 @@ class Bucket():
     """
     CDN bucker manager
     
-    init method create connection
+    init method create s3 resource
+    
+    NOTE: none of these methods are async use public interface on tasks.py
     """
     
     def __init__(self):
@@ -18,3 +20,13 @@ class Bucket():
             aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
             endpoint_url=config('AWS_S3_ENDPOINT_URL'),
         )
+    
+    def get_object_list(self):
+        result = self.connection.list_objects_v2(Bucket=config('AWS_STORAGE_BUCKET_NAME'))
+        if result['KeyCount']:
+            return result['Contents']
+        return None
+
+
+
+bucket = Bucket()
