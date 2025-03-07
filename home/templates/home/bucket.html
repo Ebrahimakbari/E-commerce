@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="card border-0 shadow-lg p-1">
-    <table class="table table-striped">
+    <table class="table table-striped table-bordered">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -20,8 +20,8 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ obj.Key }}</td>
                     <td>{{ obj.Size|filesizeformat }}</td>
-                    <td>download</td>
-                    <td>delete</td>
+                    <td><a href="{% url "home:delete_obj_bucket" obj.Key %}" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Delete</a></td>
+                    <td><a href="{% url "home:download_obj_bucket" obj.Key %}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Download</a></td>
                 </tr>
             {% endfor %}
         </tbody>

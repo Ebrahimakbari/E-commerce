@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from .models import Product, Category
 from django.contrib import messages
-from .tasks import get_bucket_list
+from . import tasks
 
 
 
@@ -23,5 +23,19 @@ class ProductDetail(View):
 
 class BucketListView(View):
     def get(self, request):
-        objects = get_bucket_list()
+        objects = tasks.get_bucket_list()
         return render(request, 'home/bucket.html', {'objects':objects})
+
+
+class DeleteObjectBucketView(View):
+    def get(self, request, key):
+        tasks.delete_obj_bucket.delay(key)
+        messages.success(request, 'object will delete soon...')
+        return redirect('home:bucket')
+
+
+class DownloadObjectBucketView(View):
+    def get(self, request, key):
+        tasks.download_obj_bucket.delay(key)
+        messages.success(request, 'object will download soon...')
+        return redirect('home:bucket')

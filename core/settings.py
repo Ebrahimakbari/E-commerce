@@ -179,6 +179,7 @@ STORAGES = {
         'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     }
 }
+AWS_LOCAL_DIRECTORY = F'{BASE_DIR}/aws/'
 
 
 # CELERY CONFIG

@@ -1,6 +1,7 @@
 import boto3.session
 from decouple import config
 import boto3
+from django.conf import settings
 
 
 class Bucket():
@@ -20,13 +21,20 @@ class Bucket():
             aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
             endpoint_url=config('AWS_S3_ENDPOINT_URL'),
         )
-    
+
     def get_object_list(self):
         result = self.connection.list_objects_v2(Bucket=config('AWS_STORAGE_BUCKET_NAME'))
         if result['KeyCount']:
             return result['Contents']
         return None
 
+    def delete_object(self, key):
+        self.connection.delete_object(Bucket=config('AWS_STORAGE_BUCKET_NAME'), Key=key)
+        return True
+
+    def download_object(self, key):
+        self.connection.download_file(config('AWS_STORAGE_BUCKET_NAME'), key, settings.AWS_LOCAL_DIRECTORY + key.split('/')[-1])
+        return True
 
 
 bucket = Bucket()
