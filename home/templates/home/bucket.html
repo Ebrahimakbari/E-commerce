@@ -26,5 +26,14 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <input type="submit" value='Upload' class="btn btn-primary">
+    </form>
 </div>
 {% endblock content %}

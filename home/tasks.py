@@ -16,3 +16,8 @@ def delete_obj_bucket(key):
 def download_obj_bucket(key):
     result = bucket.download_object(key)
     return result
+
+@shared_task
+def upload_obj_bucket(file_name, object_name):
+    result = bucket.upload_file(file_name, object_name)
+    return result
