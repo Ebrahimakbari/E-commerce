@@ -8,11 +8,10 @@ from .forms import (
 from django.views import View
 from django.contrib import messages
 from utils import (
-    send_otp_by_email,
-    send_otp_by_phone,
     create_otp_email_instance,
     create_otp_phone_number_instance,
 )
+from . import tasks
 import uuid
 import random
 from .models import OtpEmail, OtpPhoneNumber, CustomUser
@@ -43,13 +42,13 @@ class UserRegistrationView(View):
                     request.build_absolute_uri("/")
                     + f"accounts/user-verification/{token}/"
                 )
-                send_otp_by_email(email, link, expire_date)
+                tasks.send_otp_by_email_async.delay(email, link, expire_date)
                 create_otp_email_instance(email, token, expire_date)
                 redirect_method = "register"
 
             else:
                 code = random.randint(1000, 9999)
-                send_otp_by_phone(phone_number=phone_number, code=code)
+                tasks.send_otp_by_phone_async.delay(phone_number=phone_number, code=code)
                 create_otp_phone_number_instance(phone_number, code, expire_date)
                 redirect_method = "verification"
 
