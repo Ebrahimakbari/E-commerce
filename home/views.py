@@ -6,7 +6,7 @@ from .models import Product, Category
 from django.contrib import messages
 from . import tasks
 from . import forms
-
+from utils import IsAdminUserMixin
 
 class HomeView(View):
     def get(self, request):
@@ -25,7 +25,7 @@ class ProductDetail(View):
         return redirect("home:home")
 
 
-class BucketListView(View):
+class BucketListView(IsAdminUserMixin, View):
     form_class = forms.UploadFileForm
 
     def get(self, request):
@@ -55,14 +55,14 @@ class BucketListView(View):
         return redirect("home:bucket")
 
 
-class DeleteObjectBucketView(View):
+class DeleteObjectBucketView(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.delete_obj_bucket.delay(key)
         messages.success(request, "object will delete soon...")
         return redirect("home:bucket")
 
 
-class DownloadObjectBucketView(View):
+class DownloadObjectBucketView(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.download_obj_bucket.delay(key)
         messages.success(request, "object will download soon...")

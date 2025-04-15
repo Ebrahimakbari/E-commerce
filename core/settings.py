@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # internal_apps
-    'storages',
-    # external_apps
     'accounts',
     'home',
+    # external_apps
+    'storages',
 ]
 
 MIDDLEWARE = [

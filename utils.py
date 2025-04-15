@@ -4,6 +4,14 @@ from django.utils import timezone
 from accounts.models import OtpEmail, OtpPhoneNumber
 from kavenegar import *
 import decouple
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+
+
+class IsAdminUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_admin
+
 
 
 def send_otp_by_phone(phone_number, code):

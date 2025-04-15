@@ -122,6 +122,14 @@ class UserLoginForm(forms.Form):
         if not (user.exists() and user.first().phone_number == phone_number):
             raise ValidationError("user with given phone number not found!!")
         return phone_number
+    
+    def clean(self):
+        validated_data = super().clean()
+        phone_number = validated_data.get("phone_number")
+        user = CustomUser.objects.filter(phone_number=phone_number).first()
+        if user and not user.is_active:
+            raise ValidationError("user with given phone number is not activated !!")
+        
 
 
 class UserProfileForm(forms.ModelForm):

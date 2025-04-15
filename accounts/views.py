@@ -16,6 +16,8 @@ import uuid
 import random
 from .models import OtpEmail, OtpPhoneNumber, CustomUser
 from django.contrib.auth import logout, login
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class UserRegistrationView(View):
@@ -135,7 +137,7 @@ class UserVerificationView(View):
         )
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
@@ -169,7 +171,7 @@ class LoginView(View):
         return render(request, self.template_name, {"form": form})
 
 
-class UserProfileView(View):
+class UserProfileView(LoginRequiredMixin, View):
     class_form = UserProfileForm
     template_name = "accounts/profile.html"
 
