@@ -91,6 +91,7 @@ class UserVerificationView(View):
             if otp_field.exists() and user_email == otp_field.first().email:
                 if otp_field.first().is_expired:
                     messages.error(request, "Token has been expired!!")
+                    otp_field.first().delete()
                     return redirect("home:home")
                 user = CustomUser.objects.get(email=user_email)
                 user.is_active = True
@@ -119,6 +120,7 @@ class UserVerificationView(View):
                 if otp_field.first().code == int(otp_form.cleaned_data.get("code")):
                     if otp_field.first().is_expired:
                         messages.error(request, "Token has been expired!!")
+                        otp_field.first().delete()
                         return redirect("home:home")
                     user = CustomUser.objects.get(phone_number=phone_number)
                     user.is_active = True
