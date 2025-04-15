@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser
+from .models import CustomUser, OtpPhoneNumber, OtpEmail
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -95,6 +95,8 @@ class UserRegistrationForm(forms.Form):
         users = CustomUser.objects.filter(Q(phone_number=phone_number) | Q(email=email))
         if users.exists():
             raise ValidationError("Email or Phone number is already signed up!!!")
+        OtpPhoneNumber.objects.filter(phone_number=phone_number).delete()
+        OtpEmail.objects.filter(email=email).delete()
 
 
 class UserVerificationForm(forms.Form):

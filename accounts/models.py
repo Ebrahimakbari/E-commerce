@@ -44,7 +44,7 @@ class CustomUser(AbstractBaseUser):
 
 
 class OtpPhoneNumber(models.Model):
-    phone_number = models.CharField(max_length=11)
+    phone_number = models.CharField(max_length=11, unique=True)
     code = models.SmallIntegerField()
     created = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()
@@ -62,7 +62,7 @@ class OtpPhoneNumber(models.Model):
 
 
 class OtpEmail(models.Model):
-    email = models.EmailField(max_length=50)
+    email = models.EmailField(max_length=50, unique=True)
     token = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()

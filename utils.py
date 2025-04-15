@@ -3,7 +3,7 @@ import datetime
 from django.utils import timezone
 from accounts.models import OtpEmail, OtpPhoneNumber
 from kavenegar import *
-import decouple
+from decouple import config
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
@@ -16,17 +16,17 @@ class IsAdminUserMixin(UserPassesTestMixin):
 
 def send_otp_by_phone(phone_number, code):
     try:
-        api = KavenegarAPI(decouple.config("API_SMS_CODE"))
+        api = KavenegarAPI(config("OTP_SMS_CODE"))
         params = {
-            "sender": decouple.config("sender_phone"),
+            "sender": config("SENDER_PHONE"),
             "receptor": str(phone_number),
             "message": f"کد تایید شما : {code}",
         }
-        api.sms_send(params)
+        response = api.sms_send(params)
     except APIException as e:
-        print(e)
+        print(e, response)
     except HTTPException as e:
-        print(e)
+        print(e, response)
 
 
 def send_otp_by_email(email, link, expire_date):
