@@ -3,6 +3,12 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
+    <a href="{% url "home:home" %}" class="btn btn-primary">all</a>
+    {% for category in categories %}
+        <a href="{{category.get_absolute_url}}" class="btn btn-primary">{{ category.name }}</a>
+    {% endfor %}
+    <br>
+    <hr>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for product in products %}
             <div class="col">

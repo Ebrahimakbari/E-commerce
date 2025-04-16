@@ -19,6 +19,10 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(value=self.name)
         return super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("home:categories", kwargs={"category_slug": self.slug})
+    
 
 
 class Product(models.Model):

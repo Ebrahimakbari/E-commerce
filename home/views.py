@@ -9,10 +9,14 @@ from . import forms
 from utils import IsAdminUserMixin
 
 class HomeView(View):
-    def get(self, request):
+    def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
+        categories = Category.objects.all()
+        if category_slug:
+            category = categories.filter(slug=category_slug).first()
+            products = products.filter(category=category)
         return render(
-            request, template_name="home/home.html", context={"products": products}
+            request, template_name="home/home.html", context={"products": products, 'categories':categories}
         )
 
 

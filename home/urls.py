@@ -19,6 +19,7 @@ bucket_url = [
 app_name = "home"
 urlpatterns = [
     path("", view=views.HomeView.as_view(), name="home"),
+    path("categories/<slug:category_slug>", view=views.HomeView.as_view(), name="categories"),
     path("bucket/", include(bucket_url)),
     path(
         "products/<slug:slug>/",
