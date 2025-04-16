@@ -8,6 +8,8 @@ from . import tasks
 from . import forms
 from utils import IsAdminUserMixin
 
+
+
 class HomeView(View):
     def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
@@ -15,6 +17,7 @@ class HomeView(View):
         if category_slug:
             category = categories.filter(slug=category_slug).first()
             products = products.filter(category=category)
+        categories = categories.filter(is_child=False)
         return render(
             request, template_name="home/home.html", context={"products": products, 'categories':categories}
         )

@@ -5,7 +5,17 @@
 {% block content %}
     <a href="{% url "home:home" %}" class="btn btn-primary">all</a>
     {% for category in categories %}
-        <a href="{{category.get_absolute_url}}" class="btn btn-primary">{{ category.name }}</a>
+        <div class="btn-group">
+                <a type="button" class="btn btn-danger" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+            <ul class="dropdown-menu">
+                {% for child in category.children.all %}
+                    <li><a class="dropdown-item" href="{{ child.get_absolute_url }}">{{ child.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endfor %}
     <br>
     <hr>

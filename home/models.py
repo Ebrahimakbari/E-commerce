@@ -6,6 +6,8 @@ from django.utils.text import slugify
 
 
 class Category(models.Model):
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', blank=True, null=True)
+    is_child = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, blank=True, null=True)
     
@@ -17,6 +19,9 @@ class Category(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
+        #prevent a category to be itself parent
+        if self.pk and self.parent and self.parent.pk == self.pk:
+            self.parent = None
         self.slug = slugify(value=self.name)
         return super().save(*args, **kwargs)
     
@@ -31,7 +36,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/%Y/%m/%d/')
     description = models.TextField()
     slug = models.SlugField(blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ManyToManyField(Category, related_name='products')
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
