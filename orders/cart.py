@@ -29,7 +29,6 @@ class Cart:
             del self.cart[str(product_id)]
             return True
         return False
-            
     
     def save(self):
         self.session.modified = True

@@ -14,7 +14,6 @@ class CartView(View):
         return render(request, 'orders/cart.html', context={'cart':cart})
 
 
-
 class CartAddView(View):
     def post(self, request, product_id):
         c_form = AddToCartForm(request.POST)
@@ -32,6 +31,7 @@ class CartAddView(View):
         messages.error(request, 'invalid product quantity!')
         return redirect('home:home')
 
+
 class CartRemoveView(View):
     def get(self, request, product_id):
         cart = Cart(request)
@@ -41,4 +41,3 @@ class CartRemoveView(View):
             return redirect('orders:cart')
         messages.error(request, 'no product in cart!')
         return redirect('home:home')
-        
