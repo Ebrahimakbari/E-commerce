@@ -2,6 +2,8 @@ import os
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views import View
+
+from orders.forms import AddToCartForm
 from .models import Product, Category
 from django.contrib import messages
 from . import tasks
@@ -27,7 +29,8 @@ class ProductDetail(View):
     def get(self, request, *args, **kwargs):
         product = Product.objects.filter(slug=kwargs.get("slug"))
         if product.exists():
-            return render(request, "home/detail.html", {"product": product.first()})
+            form = AddToCartForm()
+            return render(request, "home/detail.html", {"product": product.first(), 'form':form})
         messages.error(request, message="product not found")
         return redirect("home:home")
 

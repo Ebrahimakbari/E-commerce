@@ -20,6 +20,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url "accounts:user_profile" %}">Profile</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url "orders:cart" %}">Orders</a>
+                    </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url "accounts:user_register" %}">Register</a>

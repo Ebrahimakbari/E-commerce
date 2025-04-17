@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # internal_apps
     'accounts',
     'home',
+    'orders',
     # external_apps
     'storages',
     'django_celery_beat',
