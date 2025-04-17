@@ -4,6 +4,7 @@
 {% block content %}
     <div class="card border-0 shadow-lg p-1">
         <table class="table table-striped table-hover">
+            <hr>
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -11,6 +12,7 @@
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
                 <th scope="col">Total Price</th>
+                <th scope="col">Delete</th>
             </tr>
             </thead>
             <tbody>
@@ -25,8 +27,18 @@
                         <td>{{ item.quantity }}</td>
                         <td>{{ item.price }}</td>
                         <td>{{ item.total_price }}</td>
+                        <td>
+                            <a href="{% url "orders:cart_remove" item.pk%}">
+                                Delete
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
+                <tr class="table-primary">
+                    <td>Cart Total Price</td>
+                    <td colspan='4'></td>
+                    <td>{{ cart.get_cart_total_price }}</td>
+                </tr>
             </tbody>
         </table>
     </div>

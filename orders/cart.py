@@ -21,6 +21,18 @@ class Cart:
         self.cart[product_id]['total_price'] = str(self.cart[product_id]['quantity'] * int(product_price))
         self.cart[product_id]['product'] = product.name
         self.cart[product_id]['slug'] = product.slug
+        self.cart[product_id]['pk'] = product.pk
+    
+    def remove(self, product_id):
+        value = self.cart.get(str(product_id))
+        if value:
+            del self.cart[str(product_id)]
+            return True
+        return False
+            
     
     def save(self):
         self.session.modified = True
+    
+    def get_cart_total_price(self):
+        return sum(int(item['total_price']) for item in self.cart.values())

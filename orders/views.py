@@ -31,3 +31,14 @@ class CartAddView(View):
             return redirect('orders:cart')
         messages.error(request, 'invalid product quantity!')
         return redirect('home:home')
+
+class CartRemoveView(View):
+    def get(self, request, product_id):
+        cart = Cart(request)
+        if cart.remove(product_id):
+            cart.save()
+            messages.success(request, 'item deleted!')
+            return redirect('orders:cart')
+        messages.error(request, 'no product in cart!')
+        return redirect('home:home')
+        
