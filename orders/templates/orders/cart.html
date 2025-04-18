@@ -41,5 +41,10 @@
                 </tr>
             </tbody>
         </table>
+        <br>
+        <hr>
+        <a href="{% url 'orders:order_create' %}" class="btn btn-primary">Create Order</a>
+        <hr>
+        <a href="{% url 'orders:order_detail' request.user.orders.first.pk %}" class="btn btn-primary">Order Detail</a>
     </div>
 {% endblock content %}

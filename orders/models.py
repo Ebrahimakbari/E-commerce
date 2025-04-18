@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from home.models import Product
 
 User = get_user_model()
@@ -20,12 +21,13 @@ class Order(models.Model):
     def get_full_price(self):
         return sum(item.get_price() for item in self.items.all())
     
+    
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_items')
     price = models.IntegerField()
-    quantity = models.SmallIntegerField()
+    quantity = models.SmallIntegerField(default=1)
     
     class Meta:
         verbose_name = 'order items'

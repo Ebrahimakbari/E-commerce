@@ -1,0 +1,25 @@
+{% extends "shared/base.html" %}
+{% block title %}Cart Detail{% endblock title %}
+
+{% block content %}
+    <div class="card border-0 shadow-lg p-1">
+        <table class="table table-striped table-hover">
+            <hr>
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full Price</th>
+            </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ order.get_full_price }}</td>
+                    </tr>
+            </tbody>
+        </table>
+        <br>
+        <hr>
+        <a href="{% url 'orders:order_create' %}" class="btn btn-primary">Pay</a>
+    </div>
+{% endblock content %}
