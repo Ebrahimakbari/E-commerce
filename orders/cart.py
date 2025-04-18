@@ -12,6 +12,9 @@ class Cart:
         for item in self.cart.values():
             yield item
     
+    def __len__(self):
+        return sum(item['quantity'] for item in self.cart.values())
+    
     def add(self, product, quantity):
         product_id = str(product.id)
         product_price = str(product.price)
