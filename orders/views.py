@@ -84,6 +84,7 @@ ZP_API_STARTPAY = f"https://{sandbox}.zarinpal.com/pg/StartPay/"
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"
 CallbackURL = 'http://127.0.0.1:8000/orders/verify/'
 
+
 class OrderPayView(LoginRequiredMixin, View):
     def get(self, request, order_id):
         try:
@@ -100,15 +101,23 @@ class OrderPayView(LoginRequiredMixin, View):
             "CallbackURL": CallbackURL,
         }
         data = json.dumps(data)
-        headers = {'content-type': 'application/json', 'content-length': str(len(data))}
+        headers = {'content-type': 'application/json',
+                    'content-length': str(len(data))}
 
         try:
-            response = requests.post(ZP_API_REQUEST, data=data, headers=headers, timeout=10)
+            response = requests.post(
+                ZP_API_REQUEST, data=data, headers=headers, timeout=10)
 
             if response.status_code == 200:
                 response_data = response.json()
                 if response_data['Status'] == 100:
-                    return JsonResponse({'status': True, 'url': ZP_API_STARTPAY + str(response_data['Authority']), 'authority': response_data['Authority']})
+                    return JsonResponse(
+                        {
+                            'status': True,
+                            'url': ZP_API_STARTPAY + str(response_data['Authority']),
+                            'authority': response_data['Authority']
+                            }
+                        )
                 else:
                     return JsonResponse({'status': False, 'code': str(response_data['Status'])}, status=400)
             return JsonResponse({'status': False, 'code': 'invalid response'}, status=400)
@@ -134,14 +143,19 @@ class OrderPayVerifyView(LoginRequiredMixin, View):
             "Authority": authority,
         }
         data = json.dumps(data)
-        headers = {'content-type': 'application/json', 'content-length': str(len(data))}
-        
+        headers = {'content-type': 'application/json',
+                    'content-length': str(len(data))}
+
         response = requests.post(ZP_API_VERIFY, data=data, headers=headers)
 
         if response.status_code == 200:
             response_data = response.json()
             if response_data['Status'] == 100:
+                order.is_paid = True
+                order.save()
                 return JsonResponse({'status': True, 'RefID': response_data['RefID']})
             else:
                 return JsonResponse({'status': False, 'code': str(response_data['Status'])})
-        return JsonResponse({'status': False, 'code': 'invalid response', 'response': response.json()}, status=400)
+        return JsonResponse(
+            {'status': False, 'code': 'invalid response', 'response': response.json()}, status=400
+            )
