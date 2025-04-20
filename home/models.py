@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from home.managers import ProductManager
 
 
 
@@ -27,7 +28,6 @@ class Category(models.Model):
     
     def get_absolute_url(self):
         return reverse("home:categories", kwargs={"category_slug": self.slug})
-    
 
 
 class Product(models.Model):
@@ -40,6 +40,9 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
+    default_objects = models.Manager()
+    objects = ProductManager()
 
     class Meta:
         verbose_name = 'product'

@@ -14,7 +14,11 @@ from utils import IsAdminUserMixin
 
 class HomeView(View):
     def get(self, request, category_slug=None):
-        products = Product.objects.filter(available=True)
+        q = request.GET.get('q', '')
+        if q:
+            products = Product.objects.q_search(q)
+        else:
+            products = Product.objects.all()
         categories = Category.objects.all()
         if category_slug:
             category = categories.filter(slug=category_slug).first()
