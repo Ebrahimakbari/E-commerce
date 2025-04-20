@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import View
 from django.contrib import messages
 from home.models import Product
-from orders.models import Order, OrderItem, Coupon
+from orders.models import Order, OrderItem
 from .forms import AddToCartForm, CouponForm
 from .cart import Cart
 from django.conf import settings
@@ -133,7 +133,9 @@ class OrderPayView(LoginRequiredMixin, View):
                             }
                         )
                 else:
-                    return JsonResponse({'status': False, 'code': str(response_data['Status'])}, status=400)
+                    return JsonResponse(
+                        {'status': False, 'code': str(response_data['Status'])}, status=400
+                        )
             return JsonResponse({'status': False, 'code': 'invalid response'}, status=400)
 
         except requests.exceptions.Timeout:

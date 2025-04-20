@@ -1,12 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import CustomUserManager
 from django.utils import timezone
 
 
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=11, unique=True)
     avatar = models.ImageField(upload_to='users/avatar/%Y/%m/%d/', blank=True, null=True)
@@ -27,12 +27,6 @@ class CustomUser(AbstractBaseUser):
     
     def __str__(self):
         return self.email
-    
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
     
     @property
     def get_full_name(self):

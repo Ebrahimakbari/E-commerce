@@ -36,7 +36,7 @@ class UserAdmin(BaseUserAdmin):
     ]
     search_fields = ["email"]
     ordering = ["email"]
-    filter_horizontal = []
+    filter_horizontal = ['groups', 'user_permissions']
     list_filter = ["is_admin"]
     fieldsets = [
         (
@@ -44,7 +44,7 @@ class UserAdmin(BaseUserAdmin):
             {"fields": ["phone_number", "email", "last_login", "password"]},
         ),
         ("Personal info", {"fields": ["first_name", "last_name", "avatar"]}),
-        ("Permissions", {"fields": ["is_admin", "is_active"]}),
+        ("Permissions", {"fields": ["is_admin", "is_active", "is_superuser", "groups", "user_permissions"]}),
     ]
     add_fieldsets = [
         (
@@ -62,6 +62,3 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     ]
-
-
-admin.site.unregister(Group)
