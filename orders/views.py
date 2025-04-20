@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.views import View
 from django.contrib import messages
 from home.models import Product
-from orders.models import Order, OrderItem
-from .forms import AddToCartForm
+from orders.models import Order, OrderItem, Coupon
+from .forms import AddToCartForm, CouponForm
 from .cart import Cart
 from django.conf import settings
 import requests
@@ -70,11 +70,25 @@ class OrderCreateView(LoginRequiredMixin, View):
 
 
 class OrderDetailView(LoginRequiredMixin, View):
+    form_class = CouponForm
     def get(self, request, order_id):
+        form = self.form_class()
         order = Order.objects.filter(pk=order_id)
         if order.exists():
-            return render(request, 'orders/cart_detail.html', {'order': order.first()})
+            return render(request, 'orders/cart_detail.html', {'order': order.first(), 'form':form})
         messages.error(request, 'invalid order id !!')
+        return redirect('orders:cart')
+
+
+class OrderDetailRemoveView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.delete()
+            messages.success(request, 'Order removed successfully.')
+        except Order.DoesNotExist:
+            messages.error(request, 'Invalid order ID.')
+        
         return redirect('orders:cart')
 
 
@@ -159,3 +173,15 @@ class OrderPayVerifyView(LoginRequiredMixin, View):
         return JsonResponse(
             {'status': False, 'code': 'invalid response', 'response': response.json()}, status=400
             )
+
+
+class CouponApplyView(LoginRequiredMixin, View):
+    form_class = CouponForm
+    def post(self, request, order_id):
+        form = self.form_class(request.POST)
+        order = Order.objects.get(pk=order_id)
+        if form.is_valid():
+            order.discount = form.cleaned_data['coupon_data']['discount']
+            order.save()
+            return redirect('orders:order_detail', order_id)
+        return render(request, 'orders/cart_detail.html', context={'order':order, 'form':form})

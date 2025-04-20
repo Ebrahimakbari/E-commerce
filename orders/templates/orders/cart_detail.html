@@ -9,15 +9,24 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Full Price</th>
+                <th scope="col">Options</th>
             </tr>
             </thead>
             <tbody>
                     <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
+                        <th scope="row">1</th>
                         <td>{{ order.get_full_price }}</td>
+                        <td><a href="{% url "orders:order_remove" order.id %}" class='btn btn-danger'>Remove</a></td>
                     </tr>
             </tbody>
         </table>
+        <br>
+        <hr>
+        <form action="{% url "orders:coupon_apply" order.id %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Apply Coupon</button>
+        </form>
         <br>
         <hr>
         <a href="{% url 'orders:order_pay' order.id %}" class="btn btn-primary">Pay</a>
