@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # external_apps
     'storages',
     'django_celery_beat',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +102,15 @@ DATABASES = {
     }
 }
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -199,3 +209,11 @@ CELERY_WORKER_PREFETCH_MULTIPLIER = 4
 # ZARINPAL SETTINGS
 SANDBOX = True
 MERCHANT = config('MERCHANT')
+
+
+# CKEDITOR CONFIGS
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
