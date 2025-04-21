@@ -1,0 +1,73 @@
+services:
+  web:
+    container_name: web
+    networks:
+      - main
+    build: .
+    ports: 
+      - 8000:8000
+    volumes:
+      - .:/core/
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+      - rabbitmq
+      - celery
+    restart: always
+  db:
+    container_name: db
+    image: postgres:17
+    networks:
+      - main
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    ports:
+      - 5431:5432
+    restart: always
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - 5671:5672
+    env_file:
+      - ./.env
+    networks:
+      - main
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+  celery:
+    container_name: celery
+    command: celery -A core worker -l INFO
+    volumes:
+      - .:/core/
+    depends_on:
+      - rabbitmq
+      - redis
+    build: .
+    env_file:
+      - ./.env
+    networks:
+      - main
+    restart: always
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6378:6379
+    networks:
+      - main
+    restart: always
+    volumes:
+      - redis_data:/data
+
+
+  
+volumes:
+  db_data:
+  redis_data:
+  rabbitmq_data:
+networks:
+  main:

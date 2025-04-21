@@ -106,7 +106,8 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        # "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": "redis://redis:6379/1",
     }
 }
 
@@ -196,8 +197,10 @@ AWS_LOCAL_DIRECTORY = F'{BASE_DIR}/aws/'
 
 
 # CELERY CONFIG
-CELERY_BROKER_URL = 'amqp://localhost'
-CELERY_RESULT_BACKEND = 'redis://localhost'
+# CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = 'amqp://rabbitmq:5672/'
+# CELERY_RESULT_BACKEND = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
