@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import CustomUserManager
 from django.utils import timezone
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -35,6 +35,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+    
+    @property
+    def get_token(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            'refresh':str(refresh),
+            'access':str(refresh.access_token),
+        }
 
 
 class OtpPhoneNumber(models.Model):

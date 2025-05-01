@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from home.managers import ProductManager
-from ckeditor.fields import RichTextField
+# from ckeditor.fields import RichTextField
 
 
 
@@ -35,7 +35,8 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     image = models.ImageField(upload_to='products/%Y/%m/%d/')
-    description = RichTextField()
+    # description = RichTextField()
+    description = models.TextField()
     slug = models.SlugField(blank=True, null=True)
     category = models.ManyToManyField(Category, related_name='products')
     available = models.BooleanField(default=True)

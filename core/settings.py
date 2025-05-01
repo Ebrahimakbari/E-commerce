@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 from decouple import config
 
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     # external_apps
     'storages',
     'django_celery_beat',
-    'ckeditor',
+    # 'ckeditor',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
@@ -109,8 +109,8 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        # "LOCATION": "redis://127.0.0.1:6379",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379",
+        # "LOCATION": "redis://redis:6379/1",
     }
 }
 
@@ -200,10 +200,10 @@ AWS_LOCAL_DIRECTORY = F'{BASE_DIR}/aws/'
 
 
 # CELERY CONFIG
-# CELERY_BROKER_URL = 'amqp://localhost'
-CELERY_BROKER_URL = 'amqp://rabbitmq:5672/'
-# CELERY_RESULT_BACKEND = 'redis://localhost'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = 'amqp://localhost'
+# CELERY_BROKER_URL = 'amqp://rabbitmq:5672/'
+CELERY_RESULT_BACKEND = 'redis://localhost'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
@@ -234,4 +234,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+}
+
+# SIMPLE_JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
