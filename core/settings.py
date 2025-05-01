@@ -43,10 +43,13 @@ INSTALLED_APPS = [
     'accounts',
     'home',
     'orders',
+    'api',
     # external_apps
     'storages',
     'django_celery_beat',
     'ckeditor',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -219,4 +222,16 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
     },
+}
+
+
+
+# REST_FRAMEWORK CONFIGS
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }

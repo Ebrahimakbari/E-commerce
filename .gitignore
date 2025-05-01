@@ -509,6 +509,8 @@ pyrightconfig.json
 
 ### VisualStudioCode ###
 .vscode/
+.idea
+.vscode
 
 # Local History for Visual Studio Code
 .history/
