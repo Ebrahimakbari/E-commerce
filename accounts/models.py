@@ -36,7 +36,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin
     
-    @property
     def get_token(self):
         refresh = RefreshToken.for_user(self)
         return {

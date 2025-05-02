@@ -5,6 +5,9 @@ from accounts.models import OtpEmail, OtpPhoneNumber
 from kavenegar import *
 from decouple import config
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 
@@ -52,3 +55,17 @@ def create_otp_email_instance(email, token, expiration_minutes=5):
     otp = OtpEmail.objects.create(email=email, token=token, expires_at=expiration_time)
     otp.save()
     return otp
+
+
+class MyBackend:
+    def authenticate(phone_number=None, password=None):
+        user = User.objects.filter(phone_number=phone_number)
+        if user.exists() and user.first().check_password(password):
+            return user.first()
+        return None
+
+    def get_user(user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None

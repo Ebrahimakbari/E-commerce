@@ -10,6 +10,7 @@ from django.contrib import messages
 from utils import (
     create_otp_email_instance,
     create_otp_phone_number_instance,
+    MyBackend
 )
 from . import tasks
 import uuid
@@ -163,8 +164,8 @@ class LoginView(View):
         if form.is_valid():
             password = form.cleaned_data.get("password")
             phone_number = form.cleaned_data.get("phone_number")
-            user = CustomUser.objects.filter(phone_number=phone_number).first()
-            if user.check_password(password):
+            user = MyBackend.authenticate(phone_number=phone_number, password=password)
+            if user:
                 login(request, user)
                 messages.success(request, "you logged in successfully!")
                 return redirect("home:home")
