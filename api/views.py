@@ -3,8 +3,10 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions, viewsets
 
 from home.models import Category, Product
+from orders.models import Order
 from .serializers import (
     CategorySerializer,
+    OrderSerializer,
     ProductSerializer,
     RegisterUserSerializer,
     EmailOtpSerializer,
@@ -14,7 +16,7 @@ from .serializers import (
     ResetPasswordSerializer,
     )
 from rest_framework.response import Response
-from utils import IsAdminUserOrReadOnly
+from utils import IsAdminUserOrReadOnly, IsOwnerOrAdmin
 
 
 class UserRegisterViewAPI(APIView):
@@ -93,7 +95,7 @@ class ResetPasswordAPI(APIView):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminUserOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated, IsAdminUserOrReadOnly,]
     serializer_class = ProductSerializer
     
     def get_queryset(self):
@@ -103,6 +105,12 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminUserOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated, IsAdminUserOrReadOnly,]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+class OrderViewAPI(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()

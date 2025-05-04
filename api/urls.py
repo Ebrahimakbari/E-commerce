@@ -8,6 +8,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('products', views.ProductViewSet, basename='product')
 router.register('categories', views.CategoryViewSet, basename='category')
+router.register('orders', views.OrderViewAPI, basename='order')
 
 
 

@@ -6,6 +6,7 @@ from accounts.models import CustomUser, OtpPhoneNumber, OtpEmail
 from django.contrib.auth.hashers import make_password
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
 from home.models import Category, Product
+from orders.models import Order, OrderItem
 from utils import create_otp_email_instance, create_otp_phone_number_instance, MyBackend
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -166,3 +167,25 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         exclude = ['slug',]
         depth = 1
+
+
+class OrderItemsSerializer(serializers.ModelSerializer):
+    full_price = serializers.IntegerField(source='get_price')
+    class Meta:
+        model = OrderItem
+        fields = ['order', 'product', 'price', 'quantity', 'full_price']
+        depth = 1
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemsSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Order
+        fields = ['user', 'items', 'is_paid', 'discount']
+    
+    def validate_user(self, value):
+        request = self.context['request']
+        if request.user != value:
+            raise ValidationError('you are not a owner of this field!!', code=status.HTTP_400_BAD_REQUEST)
+        return request.user
