@@ -3,6 +3,11 @@ from . import views
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('products', views.ProductViewSet, basename='product')
+router.register('categories', views.CategoryViewSet, basename='category')
 
 
 
@@ -15,5 +20,6 @@ urlpatterns = [
     path('users/logout/', views.LogoutUserAPI.as_view(), name='logout_api'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('users/reset-password/', views.ResetPasswordAPI.as_view(), name='reset_password_api'),
-
 ]
+
+urlpatterns += router.urls

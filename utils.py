@@ -6,6 +6,7 @@ from kavenegar import *
 from decouple import config
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import get_user_model
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 User = get_user_model()
 
@@ -69,3 +70,17 @@ class MyBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+
+class IsAdminUserOrReadOnly(BasePermission):
+    """
+    The request is admin as a user, or is a read-only request.
+    """
+
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return bool(
+            request.user and
+            request.user.is_staff
+        )

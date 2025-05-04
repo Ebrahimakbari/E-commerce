@@ -1,7 +1,11 @@
 from django.http import HttpRequest
 from rest_framework.views import APIView
-from rest_framework import status, permissions
+from rest_framework import status, permissions, viewsets
+
+from home.models import Category, Product
 from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
     RegisterUserSerializer,
     EmailOtpSerializer,
     SmsOtpSerializer,
@@ -10,6 +14,7 @@ from .serializers import (
     ResetPasswordSerializer,
     )
 from rest_framework.response import Response
+from utils import IsAdminUserOrReadOnly
 
 
 class UserRegisterViewAPI(APIView):
@@ -87,3 +92,17 @@ class ResetPasswordAPI(APIView):
             )
 
 
+class ProductViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminUserOrReadOnly,]
+    serializer_class = ProductSerializer
+    
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Product.default_objects.all()
+        return Product.objects.all()
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminUserOrReadOnly,]
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()

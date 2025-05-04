@@ -34,7 +34,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
-    image = models.ImageField(upload_to='products/%Y/%m/%d/')
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True, null=True)
     # description = RichTextField()
     description = models.TextField()
     slug = models.SlugField(blank=True, null=True)

@@ -5,6 +5,7 @@ from accounts import tasks
 from accounts.models import CustomUser, OtpPhoneNumber, OtpEmail
 from django.contrib.auth.hashers import make_password
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from home.models import Category, Product
 from utils import create_otp_email_instance, create_otp_phone_number_instance, MyBackend
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -153,3 +154,15 @@ class ResetPasswordSerializer(serializers.Serializer):
         raise ValidationError('mismatch passwords!!', code=status.HTTP_400_BAD_REQUEST)
 
 
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        exclude = ['slug', 'image', 'created', 'updated']
+        depth = 1
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        exclude = ['slug',]
+        depth = 1
