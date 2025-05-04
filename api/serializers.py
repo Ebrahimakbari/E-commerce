@@ -97,7 +97,7 @@ class EmailOtpSerializer(serializers.Serializer):
             data['email'] = user.email
             return data
         raise ValidationError(
-            'Invalid Token!!', status=status.HTTP_400_BAD_REQUEST)
+            'Invalid Token!!', code=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -111,10 +111,10 @@ class LoginUserSerializer(serializers.Serializer):
             phone_number=phone_number, password=password)
         if not user:
             raise AuthenticationFailed(
-                'invalid credential!!', status=status.HTTP_400_BAD_REQUEST)
+                'invalid credential!!', code=status.HTTP_400_BAD_REQUEST)
         if not user.is_active:
             raise AuthenticationFailed(
-                'user not activated!!', status=status.HTTP_400_BAD_REQUEST)
+                'user not activated!!', code=status.HTTP_400_BAD_REQUEST)
         data['tokens'] = user.get_token()
         data['user-info'] = {
             'phone_number': str(user.phone_number),
@@ -133,5 +133,23 @@ class LogoutUserSerializer(serializers.Serializer):
             RefreshToken(data['refresh']).blacklist()
         except TokenError:
             raise ValidationError(
-                'bad token!', status=status.HTTP_400_BAD_REQUEST)
+                'bad token!', code=status.HTTP_400_BAD_REQUEST)
         return data
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        password1 = data['password1']
+        password2 = data['password2']
+        if password2 and password1 and password1 == password2:
+            request = self.context['request']
+            user = request.user
+            user.password = make_password(password1)
+            user.save()
+            return data
+        raise ValidationError('mismatch passwords!!', code=status.HTTP_400_BAD_REQUEST)
+
+

@@ -14,5 +14,6 @@ urlpatterns = [
     path('users/login/', views.LoginUserAPI.as_view(), name='login_api'),
     path('users/logout/', views.LogoutUserAPI.as_view(), name='logout_api'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('users/reset-password/', views.ResetPasswordAPI.as_view(), name='reset_password_api'),
 
 ]

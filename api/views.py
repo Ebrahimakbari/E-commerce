@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from .serializers import (
@@ -5,7 +6,8 @@ from .serializers import (
     EmailOtpSerializer,
     SmsOtpSerializer,
     LoginUserSerializer,
-    LogoutUserSerializer
+    LogoutUserSerializer,
+    ResetPasswordSerializer,
     )
 from rest_framework.response import Response
 
@@ -45,7 +47,10 @@ class UserAccountActivationAPI(APIView):
                     'message': f'user with {srz_data.validated_data['email']} email is activated!!'
                 }, status=status.HTTP_200_OK)
             return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(data={'message': 'use post for sms verification!'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            data={'message': 'use post for sms verification!'},
+            status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class LoginUserAPI(APIView):
@@ -64,5 +69,21 @@ class LogoutUserAPI(APIView):
     def post(self, request):
         srz_data = LogoutUserSerializer(data=request.data)
         if srz_data.is_valid():
-            return Response(data={'message': 'you logged out successfully!!'}, status=status.HTTP_200_OK)
+            return Response(
+                data={'message': 'you logged out successfully!!'},
+                status=status.HTTP_200_OK
+                )
         return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated,]
+    def post(self, request:HttpRequest):
+        srz_data = ResetPasswordSerializer(data=request.data, context={'request':request})
+        srz_data.is_valid(raise_exception=True)
+        return Response(
+            data={'message':f'password for user {request.user.phone_number} is changed!'},
+            status=status.HTTP_200_OK
+            )
+
+
