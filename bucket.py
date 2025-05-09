@@ -16,11 +16,12 @@ class Bucket:
 
     def __init__(self):
         session = boto3.session.Session()
+        print(config("AWS_S3_ENDPOINT_URL"))
         self.connection = session.client(
             service_name="s3",
             aws_access_key_id=config("AWS_ACCESS_KEY_ID"),
             aws_secret_access_key=config("AWS_SECRET_ACCESS_KEY"),
-            endpoint_url=config("AWS_S3_ENDPOINT_URL"),
+            endpoint_url=f'https://{config("AWS_S3_ENDPOINT_URL")}',
         )
 
     def get_object_list(self):
